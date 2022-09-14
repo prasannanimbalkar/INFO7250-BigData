@@ -1,0 +1,68 @@
+NEO4J.
+
+
+LOAD CSV FROM "file:///Neo4sample.csv" AS line FIELDTERMINATOR "," 
+CREATE (:MainData2 {Country: line[7], CustomerId: toInteger(line[6]), Description: line[2],InvoiceId: line[0], InvoiceDate: line[4],Price: toFloat(line[5]), Quantity: line[3], StockId:line[1]})
+
+
+LOAD CSV FROM "file:///CustomerID.csv" AS line FIELDTERMINATOR "," 
+CREATE (:CustomerID {CustomerID: toInteger(line[0])})
+
+//customer to items ordered
+MATCH (a:CustomerID), (b:MainData2)
+WHERE a.CustomerID = b.CustomerId
+CREATE (a) - [r:Buy {CustomerId: a.CustomerID + '->' + b.InvoiceId}]->(b)
+RETURN type(r), r.CustomerId
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MATCH (a:MainData2), (b:CustomerID)
+WHERE a.CustomerId = b.CustomerID
+CREATE (a) - [r:Country2 {CustomerId: a.Country + '->' + b.CustomerID}]->(b)
+RETURN type(r), r.CustomerID
+
+
+
+MATCH (a:Data5), (b:Data4)
+WHERE a.CustomerId = b.CustomerId
+CREATE (a) - [r:Buys {CustomerId: a.CustomerId + '->' + b.Description}]->(b)
+RETURN type(r), r.CustomerId
+
+
+MATCH (:CustomerId {name: '17850'})--(Country:France)
+RETURN Country.France
